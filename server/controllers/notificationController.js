@@ -30,35 +30,44 @@ exports.sendNotification = async (req, res) => {
   try {
     // Fetch all stored tokens from MongoDB
 
-    if (status === "scheduled") {
-      // Prepare push notifications payload for each token
+
+    if(status==='scheduled'){
+
+    // Prepare push notifications payload for each token
+    let messages = {};
       if (Expo.isExpoPushToken(tokenExpo)) {
-        const messages = {
+        messages ={
           to: tokenExpo, // Expo push token
           sound: "default",
           body: "Pa brate nek je sa srecom puno zdravlja. Vucicu pederu. Partizan sampion",
         };
-        // Send notifications through Expo's service
-        const chunks = expo.chunkPushNotifications(messages);
-        const tickets = [];
-
-        for (let chunk of chunks) {
-          try {
-            const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-            tickets.push(...ticketChunk);
-          } catch (error) {
-            console.error(error);
-          }
-        }
-
-        console.log("Push notifications sent:", tickets);
-        res.status(200).send("Notification sent successfully");
       } else {
         console.log(`Invalid Expo push token: ${tokenExpo}`);
       }
     }
+    
+
+    if (messages) {
+      // Send notifications through Expo's service
+      const chunks = expo.chunkPushNotifications(messages);
+      const tickets = [];
+
+      for (let chunk of chunks) {
+        try {
+          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      console.log("Push notifications sent:", tickets);
+      res.status(200).send("Notification sent successfully");
+    } else {
+      res.status(400).send("No valid Expo tokens found");
+    }
   } catch (error) {
-    console.log("Error sending notification:", error);
+    console.error("Error sending notification:", error);
     res.status(500).send(`Failed to send notification ${error} `);
   }
 };
