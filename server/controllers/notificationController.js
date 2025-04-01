@@ -68,7 +68,7 @@ exports.sendNotification = async (req, res) => {
     }
   } catch (error) {
     console.error("Error sending notification:", error);
-    res.status(500).send("Failed to send notification");
+    res.status(500).send(`Failed to send notification ${error} `);
   }
 };
 // Create a new customer
