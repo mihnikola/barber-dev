@@ -24,7 +24,6 @@ exports.pushNotification = async (req, res) => {
 };
 
 
-
 exports.sendNotification = async (req, res) => {
   const { status, tokenExpo } = req.body.params;
   try {
@@ -34,20 +33,20 @@ exports.sendNotification = async (req, res) => {
     if(status==='scheduled'){
 
     // Prepare push notifications payload for each token
-    let messages = [];
+    let messages;
       if (Expo.isExpoPushToken(tokenExpo)) {
-        messages.push({
+        messages ={
           to: tokenExpo, // Expo push token
           sound: "default",
           body: "Pa brate nek je sa srecom puno zdravlja. Vucicu pederu. Partizan sampion",
-        });
+        };
       } else {
         console.log(`Invalid Expo push token: ${token.token}`);
       }
     }
     
 
-    if (messages.length > 0) {
+    if (messages) {
       // Send notifications through Expo's service
       const chunks = expo.chunkPushNotifications(messages);
       const tickets = [];
