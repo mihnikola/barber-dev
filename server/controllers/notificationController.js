@@ -1,6 +1,25 @@
 const Notification = require("../models/Notification");
 const jwt = require("jsonwebtoken");
 
+
+exports.pushNotification = async (req, res) => {
+  const currentDate = new Date().toISOString();
+  try {
+    const { status, tokenExpo } = req.body.params;
+    const newNotification = new Notification({
+      text: status,
+      isRead: false,
+      date: currentDate,
+      user_id: tokenExpo,
+    });
+    await newNotification.save();
+
+    res.status(201).json({ message: "Notification created successfully" });
+  } catch (error) {
+    console.error("Error sending notification:", error);
+    res.status(500).send("Failed to send notification");
+  }
+};
 // Create a new customer
 exports.createNotification = async (req, res) => {
   const currentDate = new Date().toISOString();
