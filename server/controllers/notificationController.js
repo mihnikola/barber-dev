@@ -1,7 +1,9 @@
+const { default: Expo } = require("expo-server-sdk");
+const expo = new Expo();
+
 const Notification = require("../models/Notification");
 const jwt = require("jsonwebtoken");
-
-
+//create push noti
 exports.pushNotification = async (req, res) => {
   const currentDate = new Date().toISOString();
   try {
@@ -10,15 +12,63 @@ exports.pushNotification = async (req, res) => {
       text: status,
       isRead: false,
       date: currentDate,
-      user_id: "67b592146aedf7710613d7b9",
+      user_id: tokenExpo,
     });
     await newNotification.save();
 
     res.status(201).json({ message: "Notification created successfully" });
   } catch (error) {
+    console.error("Error sending notification:", error);
+    res.status(500).send("Failed to send notification");
+  }
+};
+
+
+
+exports.sendNotification = async (req, res) => {
+  const { status, tokenExpo } = req.body.params;
+  try {
+    // Fetch all stored tokens from MongoDB
+
+
+    if(status==='scheduled'){
+
+    // Prepare push notifications payload for each token
+    let messages = [];
+      if (Expo.isExpoPushToken(tokenExpo)) {
+        messages.push({
+          to: tokenExpo, // Expo push token
+          sound: "default",
+          body: "Pa brate nek je sa srecom puno zdravlja. Vucicu pederu. Partizan sampion",
+        });
+      } else {
+        console.log(`Invalid Expo push token: ${token.token}`);
+      }
+    }
     
-    console.log("Error sending notification:", error);
-    res.status(500).send(`Failed to send notification ${error}`);
+
+    if (messages.length > 0) {
+      // Send notifications through Expo's service
+      const chunks = expo.chunkPushNotifications(messages);
+      const tickets = [];
+
+      for (let chunk of chunks) {
+        try {
+          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+          tickets.push(...ticketChunk);
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      console.log("Push notifications sent:", tickets);
+      res.status(200).send("Notification sent successfully");
+    } else {
+      res.status(400).send("No valid Expo tokens found");
+    }
+  } catch (error) {
+    console.error("Error sending notification:", error);
+    res.status(500).send("Failed to send notification");
   }
 };
 // Create a new customer
