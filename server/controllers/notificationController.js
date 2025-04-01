@@ -10,7 +10,7 @@ exports.pushNotification = async (req, res) => {
       text: status,
       isRead: false,
       date: currentDate,
-      user_id: tokenExpo,
+      user_id: "67b592146aedf7710613d7b9",
     });
     await newNotification.save();
 
