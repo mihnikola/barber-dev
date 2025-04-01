@@ -40,28 +40,29 @@ exports.sendNotification = async (req, res) => {
           sound: "default",
           body: "Pa brate nek je sa srecom puno zdravlja. Vucicu pederu. Partizan sampion",
         };
+        if (messages) {
+          // Send notifications through Expo's service
+          const chunks = expo.chunkPushNotifications(messages);
+          const tickets = [];
+    
+          for (let chunk of chunks) {
+            try {
+              const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+              tickets.push(...ticketChunk);
+            } catch (error) {
+              console.error(error);
+            }
+          }
+    
+          console.log("Push notifications sent:", tickets);
+          res.status(200).send("Notification sent successfully");
       } else {
-        console.log(`Invalid Expo push token: ${token.token}`);
+        console.log(`Invalid Expo push token: ${tokenExpo}`);
       }
     }
     
 
-    if (messages) {
-      // Send notifications through Expo's service
-      const chunks = expo.chunkPushNotifications(messages);
-      const tickets = [];
-
-      for (let chunk of chunks) {
-        try {
-          const ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-          tickets.push(...ticketChunk);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-
-      console.log("Push notifications sent:", tickets);
-      res.status(200).send("Notification sent successfully");
+    
     } else {
       res.status(400).send("No valid Expo tokens found");
     }
