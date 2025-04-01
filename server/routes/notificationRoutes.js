@@ -7,5 +7,7 @@ const router = express.Router();
 // Create a new service
 router.get('/',authenticate, notificationController.getNotifications);
 router.post('/',authenticate, notificationController.createNotification);
+router.post('/push', notificationController.pushNotification);
+
 
 module.exports = router;
