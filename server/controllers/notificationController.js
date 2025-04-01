@@ -25,16 +25,17 @@ exports.pushNotification = async (req, res) => {
 
 
 
+
 exports.sendNotification = async (req, res) => {
   const { status, tokenExpo } = req.body.params;
   try {
     // Fetch all stored tokens from MongoDB
 
+    let messages = {};
 
     if(status==='scheduled'){
 
     // Prepare push notifications payload for each token
-    let messages = {};
       if (Expo.isExpoPushToken(tokenExpo)) {
         messages ={
           to: tokenExpo, // Expo push token
