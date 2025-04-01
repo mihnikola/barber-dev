@@ -29,27 +29,21 @@ exports.pushNotification = async (req, res) => {
 exports.sendNotification = async (req, res) => {
   const { status, tokenExpo } = req.body.params;
   try {
-    // Fetch all stored tokens from MongoDB
+    let messages = []; // Initialize messages as an empty array
 
-    let messages = {};
-
-    if(status==='scheduled'){
-
-    // Prepare push notifications payload for each token
+    if (status === 'scheduled') {
       if (Expo.isExpoPushToken(tokenExpo)) {
-        messages ={
-          to: tokenExpo, // Expo push token
+        messages.push({ // Push a single message object into the array
+          to: tokenExpo,
           sound: "default",
           body: "Pa brate nek je sa srecom puno zdravlja. Vucicu pederu. Partizan sampion",
-        };
+        });
       } else {
         console.log(`Invalid Expo push token: ${tokenExpo}`);
       }
     }
-    
 
-    if (messages) {
-      // Send notifications through Expo's service
+    if (messages.length > 0) { // Check if the messages array has any elements
       const chunks = expo.chunkPushNotifications(messages);
       const tickets = [];
 
@@ -72,6 +66,20 @@ exports.sendNotification = async (req, res) => {
     res.status(500).send(`Failed to send notification ${error} `);
   }
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Create a new customer
 exports.createNotification = async (req, res) => {
   const currentDate = new Date().toISOString();
