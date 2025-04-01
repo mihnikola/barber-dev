@@ -16,6 +16,7 @@ exports.pushNotification = async (req, res) => {
 
     res.status(201).json({ message: "Notification created successfully" });
   } catch (error) {
+    
     console.log("Error sending notification:", error);
     res.status(500).send(`Failed to send notification ${error}`);
   }
