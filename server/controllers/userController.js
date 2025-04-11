@@ -156,7 +156,10 @@ exports.createUser = async (req, res) => {
       .then(
         (response) => {
           console.log('SUCCESS!', response.status, response.text);
-          
+                res.status(201).json({
+        message:
+          "User created successfully!",
+      });
         },
         (err) => {
           console.log('FAILED...', err);
@@ -167,10 +170,7 @@ exports.createUser = async (req, res) => {
         },
       );
  
-      res.status(201).json({
-        message:
-          "User created successfully!",
-      });
+
     // res.status(201).json({
     //   message:
     //     "User created successfully! Please check your email to verify your account.",
