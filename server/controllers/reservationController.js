@@ -1,31 +1,18 @@
-import { prettyUrlDataImage, convertToTimeStamp } from "../helpers/utils.js";
-// const Reservation = require("../models/Reservation");
-import Reservation from "../models/Reservation.js";
-// const Token = require("../models/Token");
-import Token from "../models/Token.js";
-// const jwt = require("jsonwebtoken");
-import jwt from "jsonwebtoken";
-// require("dotenv").config();
-import dotenv from "dotenv";
-dotenv.config();
-import { getFirestore } from "firebase-admin/firestore";
+const { prettyUrlDataImage, convertToTimeStamp } = require("../helpers/utils");
+const Reservation = require("../models/Reservation");
+const Token = require("../models/Token");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const admin = require("firebase-admin");
 
-// const admin = require('firebase-admin');
-import admin from "firebase-admin";
-import serviceAccount from "../helpers/barber-demo-218de-firebase-adminsdk-fbsvc-0f43d447e4.json" with { type: 'json' };
+if (!admin.apps.length) {
+  const serviceAccount = require("../helpers/barber-demo-218de-firebase-adminsdk-fbsvc-0f43d447e4.json");
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+}
 
-// In your case:
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  projectId: "barber-demo-218de", // Ensure this is correct
-});
-
-
-
-const db = getFirestore();
-// Create a new reservation
-const createReservation = async (req, res) => {
+exports.createReservation = async (req, res) => {
   try {
     const { date, time, service_id, token, customer, employerId } =
       req.body.params;
@@ -38,7 +25,6 @@ const createReservation = async (req, res) => {
     const status = customer !== "" ? 1 : 0;
     const timeStampValue = convertToTimeStamp(date, time);
 
-    // pushNotification(timeStampValue,tokenExpo.token); 11/04/2025 10:00
     const newReservation = new Reservation({
       date,
       time,
@@ -51,19 +37,26 @@ const createReservation = async (req, res) => {
 
     await newReservation.save();
 
-    // After successfully saving the reservation, add a record to Firestore 'tasks' collection
-    const tasksCollection = db.collection("tasks");
-    const taskData = {
-      status: "scheduled", // Initial status for the task
-      performAt: timeStampValue, // Use the reservation time as the performAt time
-      token: tokenExpo.token,
-
-      // Add other relevant task details if needed
+    const functionUrl =
+      "https://us-central1-barber-demo-218de.cloudfunctions.net/addTaskCollection";
+      const searchParams = {
+        timeStampValue,
+        tokenExpo,
+      };
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(searchParams),
     };
-
-    const firestoreDocRef = await tasksCollection.add(taskData);
-    console.log("Task added to Firestore with ID:", firestoreDocRef.id);
-
+    try {
+      const response = await fetch(functionUrl, requestOptions);
+      const responseJSON = await response.json();
+      console.log({ responseJSON });
+    } catch (error) {
+      console.error("Error calling function:", error);
+    }
     res.status(201).json(newReservation);
   } catch (err) {
     console.log("errorcina", err);
@@ -71,10 +64,8 @@ const createReservation = async (req, res) => {
   }
 };
 
-export { createReservation };
-
 // Get all reservations
-const getReservations = async (req, res) => {
+exports.getReservations = async (req, res) => {
   const { date, token, check } = req.query;
 
   const currentDate = new Date(); // This will be a valid JavaScript Date object
@@ -113,9 +104,8 @@ const getReservations = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-export { getReservations };
 
-const patchReservationById = async (req, res) => {
+exports.patchReservationById = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body.params;
@@ -132,9 +122,8 @@ const patchReservationById = async (req, res) => {
     res.status(500).send("Server Error");
   }
 };
-export { patchReservationById };
 
-const getReservationById = async (req, res) => {
+exports.getReservationById = async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -171,5 +160,3 @@ const getReservationById = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-export { getReservationById };
