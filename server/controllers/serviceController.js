@@ -77,7 +77,6 @@ exports.putService = async (req, res) => {
 exports.getServices = async (req, res) => {
   try {
     const services = await Service.find();
-console.log("mjauuuuuuuuuuuu")
     const servicesData = services.map((item) => {
       return {
         id: item._id,
