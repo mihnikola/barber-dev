@@ -1,17 +1,15 @@
 const { default: Expo } = require("expo-server-sdk");
 const Token = require("../models/Token");
 const expo = new Expo();
-
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 // API route to save FCM Token
 exports.saveToken = async (req, res) => {
-  const { tokenExpo, tokenUser } = req.body.params;
+  const { tokenExpo, tokenUser } = req.body;
   try {
     // Save the token to MongoDB
     const decoded = jwt.verify(tokenUser, process.env.JWT_SECRET_KEY);
-    
     const tokens = await Token.findOne({token: tokenExpo});
     if (tokens) {
        return res.status(200).send("Token already exist");
