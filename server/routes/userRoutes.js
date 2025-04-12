@@ -8,7 +8,6 @@ router.post('/', userController.createUser);
 router.post('/admin', userController.createAdminUser);
 router.post('/login', userController.loginUser);
 router.post('/login/admin', userController.loginAdminUser);
-router.get('/verify', userController.verifyEmail);
 router.get('/', userController.getUsers);
 router.get('/:id', userController.getUser);
 router.put('/:id', userController.patchUser);
