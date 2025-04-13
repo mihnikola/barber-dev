@@ -4,24 +4,24 @@ const expo = new Expo();
 const Notification = require("../models/Notification");
 const jwt = require("jsonwebtoken");
 //create push noti
-exports.pushNotification = async (req, res) => {
-  const currentDate = new Date().toISOString();
-  try {
-    const { status, tokenExpo } = req.body.params;
-    const newNotification = new Notification({
-      text: status,
-      isRead: false,
-      date: currentDate,
-      user_id: tokenExpo,
-    });
-    await newNotification.save();
+// exports.pushNotification = async (req, res) => {
+//   const currentDate = new Date().toISOString();
+//   try {
+//     const { status, tokenExpo } = req.body.params;
+//     const newNotification = new Notification({
+//       text: status,
+//       isRead: false,
+//       date: currentDate,
+//       user_id: tokenExpo,
+//     });
+//     await newNotification.save();
 
-    res.status(201).json({ message: "Notification created successfully" });
-  } catch (error) {
-    console.error("Error sending notification:", error);
-    res.status(500).send("Failed to send notification");
-  }
-};
+//     res.status(201).json({ message: "Notification created successfully" });
+//   } catch (error) {
+//     console.error("Error sending notification:", error);
+//     res.status(500).send("Failed to send notification");
+//   }
+// };
 
 
 
@@ -141,22 +141,22 @@ exports.getNotifications = async (req, res) => {
 };
 
 // Patch all notifications
-exports.patchNotification = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { isRead } = req.body.params;
+// exports.patchNotification = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { isRead } = req.body.params;
 
-    const notification = await Notification.findByIdAndUpdate(
-      id,
-      { isRead },
-      { new: true }
-    );
-    if (!notification) {
-      return res.status(404).send("Notification not found");
-    }
+//     const notification = await Notification.findByIdAndUpdate(
+//       id,
+//       { isRead },
+//       { new: true }
+//     );
+//     if (!notification) {
+//       return res.status(404).send("Notification not found");
+//     }
 
-    res.status(200).json({ message: "Notification is read" });
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
+//     res.status(200).json({ message: "Notification is read" });
+//   } catch (error) {
+//     res.status(500).send(error);
+//   }
+// };

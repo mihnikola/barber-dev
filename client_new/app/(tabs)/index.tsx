@@ -61,25 +61,37 @@ export default function HomeScreen() {
       getStorage()
         .then((res) => {
           if (res) {
+            console.log("initailToken",res)
             setTokenVal(res);
           }
         })
         .catch((error) => {
           console.log("error", error);
         });
-    }, 2000);
+    }, 1000);
   }, []);
   useEffect(() => {
+
 // Request permissions from the user
     if (tokenVal) {
+
+
+
       const getPushToken = async () => {
+        console.log("start get push")
         // Request permission for notifications
         const { status } = await requestPermissionsAsync();
-
+        console.log("status",status)
         if (status === "granted") {
+          console.log("start get expo token")
           // Get the Expo Push Token (which is equivalent to FCM Token in this case)
-          const token = await getExpoPushTokenAsync();
+   
+            const token = await getExpoPushTokenAsync();
+ 
+       
           // const token = await Notifications.getDevicePushTokenAsync();
+          console.log("tokenV",status,token)
+
           setExpoPushToken(token.data);
           console.log("Expo Push Token:", token.data);
 
@@ -114,6 +126,9 @@ export default function HomeScreen() {
 
   // Send the push token to your server (Node.js backend) ok
   const sendTokenToServer = async (data) => {
+    console.log(data);
+
+
     try {
       await axios
         .post(`${process.env.EXPO_PUBLIC_API_URL}/api/save-token`, {
@@ -121,6 +136,7 @@ export default function HomeScreen() {
           tokenUser: tokenVal,
         })
         .then((res) => {
+          console.log(res);
           if (res.status === 404) {
             console.log("Prc vec ima");
           }

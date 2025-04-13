@@ -1,7 +1,6 @@
 const { default: Expo } = require("expo-server-sdk");
 const Token = require("../models/Token");
 const expo = new Expo();
-
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -11,7 +10,6 @@ exports.saveToken = async (req, res) => {
   try {
     // Save the token to MongoDB
     const decoded = jwt.verify(tokenUser, process.env.JWT_SECRET_KEY);
-    console.log("dddd",tokenUser,tokenExpo);
     const tokens = await Token.findOne({token: tokenExpo});
     if (tokens) {
        return res.status(200).send("Token already exist");
@@ -29,33 +27,6 @@ exports.saveToken = async (req, res) => {
   }
 };
 
-// app.post("/api", async (req, res) => {
-//   const { comment, name } = req.body;
-//   const message = {
-//     message: {
-//       data: {
-//         title: "Hello, ",
-//         body: `${name} says: ${comment}`,
-//       },
-//     },
-//   };
-//   const response = await fetch("https://fcm.googleapis.com/fcm/send", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: "key=AIzaSyBTQO6eLNyD-EWlTX69skuCZoFZJ-eX9uc",
-//     },
-//     body: JSON.stringify(message),
-//   });
-//   const data = await response.json();
-//   if (data.success) {
-//     res.status(200).send("Message sent successfully");
-//     console.log("Message sent successfully");
-//   } else {
-//     res.status(500).send("Failed to send message");
-//     console.error("Error sending message:", data);
-//   }
-// });
 // API route to send push notification
 exports.sendNotification = async (req, res) => {
   const { message, token } = req.body.params;
