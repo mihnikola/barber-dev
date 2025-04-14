@@ -68,7 +68,8 @@ const register = ({change}) => {
           password,
         })
         .then((result) => {
-          if (result.status === 200) {
+          console.log("result",result)
+          if (result.status === 201) {
             showToast("User created successfully!");
             setTimeout(() => {
               navigation.navigate("components/login/index");
@@ -76,6 +77,8 @@ const register = ({change}) => {
           }
         })
         .catch((errorx) => {
+          console.log("errorx",errorx)
+          
           showToast("then & catch error: ", errorx);
         });
     } catch (e) {
