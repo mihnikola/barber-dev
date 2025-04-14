@@ -1,16 +1,16 @@
-import { View, Text } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
-import Summary from "@/shared-components/Summary";
-import NotSummary from "@/shared-components/NotSummary";
-import Details from "@/shared-components/Details";
-import FlatButton from "@/shared-components/Button";
+import React, { useContext, useState } from "react";
+import { View, StyleSheet } from "react-native";
 import { CalendarList, LocaleConfig } from "react-native-calendars";
-import ReservationContext from "@/context/ReservationContext";
 import { useNavigation } from "expo-router";
-import axios from "axios";
-import Storage from "expo-storage";
-import Loader from "@/components/Loader";
-import { getStorage } from "@/helpers";
+import ReservationContext from "@/context/ReservationContext"; // Adjust the path if needed
+import FlatButton from "@/shared-components/Button"; // Adjust the path if needed
+import Loader from "@/components/Loader"; // Adjust the path if needed
+import NotSummary from "@/shared-components/NotSummary"; // Adjust the path if needed
+import Summary from "@/shared-components/Summary"; // Adjust the path
+import Details from "@/shared-components/Details"; // Adjust the path
+import useFetchTimes from "./hooks/useFetchTimes";
+import useSelectedDate from "./hooks/useSelectedDate";
+import { calendarTheme } from "@/helpers";
 
 // Set up locale for Serbian language
 LocaleConfig.locales["srb"] = {
@@ -24,7 +24,7 @@ LocaleConfig.locales["srb"] = {
     "Jul",
     "Avgust",
     "Septembar",
-    "Octobar",
+    "Oktobar",
     "Novembar",
     "Decembar",
   ],
@@ -33,205 +33,103 @@ LocaleConfig.locales["srb"] = {
     "Ponedeljak",
     "Utorak",
     "Sreda",
-    "Cetvrtak",
+    "Četvrtak",
     "Petak",
     "Subota",
   ],
-  dayNamesShort: ["Ned", "Pon", "Uto", "Sre", "Cet", "Pet", "Sub"],
+  dayNamesShort: ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"],
 };
 LocaleConfig.defaultLocale = "srb";
 
 const DateComponent = () => {
+  
   const currentDate = new Date();
-  const [selectedMonths, setSelectedMonths] = useState<number>(1);
-  const [selected, setSelected] = useState("");
-  const { reservation, updateReservation } = useContext(ReservationContext)!; // Access context  const route = useRoute();
-  const navigation = useNavigation();
-  const [isLoading, setIsLoading] = useState(false);
-  const [tokenProm,setTokenProm] = useState(null);
-
-  // Format the current date
-  const [timesData, setTimesData] = useState([]);
   const formattedDate = currentDate?.toISOString()?.split("T")[0];
-  // const formattedDate = currentDate;
-  // Function to check if the date is Sunday
-  const isSunday = (date: string): boolean => {
-    const dayOfWeek = new Date(date).getDay(); // getDay() returns 0 for Sunday
-    return dayOfWeek === 0;
-  };
-  useEffect(()=>{
-    getStorage()
-    .then((res) => {
-      console.log("ajasdjasjdhjasdhasjdg ", res);
-      setTokenProm(res);
-      
-    })
-    .catch((erro) => console.log("e", erro));
+  const { reservation, updateReservation } = useContext(ReservationContext)!;
+  const [selectedItem, setSelectedItem] = useState(null);
 
-  },[])
-
-
-  const getTimesData = async (dayData) => {
-    if(dayData){
-
-    setIsLoading(true);
-    setTimesData([]);
-    getMFTimes(dayData);
-  }
-  }
-    
-
-  const getMFTimes = async (date) => {
-    const { employer, service } = reservation;
-
-    const serviceData = {
-      id: service._id,
-      duration: service.duration,
-    };
-    const employerData = {
-      id: employer.id,
-    };
-    const dateValue = convertDateRequest(date);
-    updateReservation({ ...reservation, dateReservation: dateValue });
-    console.log("ispred poziva",tokenProm);
-    try {
-      await axios
-        .get(`${process.env.EXPO_PUBLIC_API_URL}/times`, {
-          params: {
-            date: dateValue,
-            employer: employerData,
-            service: serviceData,
-          },
-          headers: { Authorization: `${tokenProm}` },
-        })
-        .then((res) => {
-          console.log("uuuu poziva", res.data);
-
-          if (res.request?.status === 200) {
-            setTimesData(res.data);
-            setIsLoading(false);
-          }
-        })
-        .catch((err) => console.log("errorrrr", err.request));
-    } catch (error) {
-      console.log("gresketina", error);
-      setIsLoading(false);
-    }
-
-    setIsLoading(false);
-  };
+  const navigation = useNavigation();
+  const { selectedDate, handleDayPress } = useSelectedDate(formattedDate);
+  const { timesData, isLoading, error } = useFetchTimes(
+    selectedDate,
+    reservation
+  );
 
   const reportHandler = () => {
-    const { employer, service, timeData, dateReservation } = reservation;
-    if (employer && service && timeData && dateReservation) {
+    const { employer, service } = reservation;
+    if (employer && service && selectedItem && selectedDate) {
+      updateReservation({...reservation, dateReservation: selectedDate, timeData: selectedItem  })
       navigation.navigate("components/reservation/index");
     }
-    // // console.log("eeee",employer._id);
-    // // console.log("sss",service._id);
-    // // console.log("timeData",timeData.value);
-    // // console.log("dateReservation+++",dateReservation);
-    // const tokenData = await Storage.getItem({ key: "token" });
-
-    // try {
-    //   await axios
-    //     .post("http://10.58.158.121:5000/reservations", {
-    //       params: {
-    //         employerId: employer._id,
-    //         service_id: service._id,
-    //         time: timeData.value,
-    //         date: dateReservation,
-    //         customer:"",
-    //         token: tokenData
-    //       },
-    //       headers: { Authorization: `${tokenData}` },
-    //     })
-    //     .then((res) => {
-    //       console.log("res", res);
-
-    //       if (res.request?.status === 201) {
-    //         console.log("res", res.data);
-    //         // setTimesData(res.data);
-    //         navigation.navigate("reservation");
-
-    //       }
-    //     })
-    //     .catch((err) => console.log("errorrrr", err));
-    // } catch (error) {
-    //   console.log("error", error);
-    // }
-
-    // // // updateReservation({ ...reservation, dateData: { data } });
-    // // // console.log("reservation",employer._id, service._id,);
-  };
-
-  const convertDateRequest = (dateObj) => {
-    const date = new Date(dateObj.timestamp);
-    date.setHours(2);
-    date.setMinutes(40);
-    return date.toISOString();
   };
 
   return (
-    <View style={{ display: "flex", flexDirection: "column" }}>
-      <View style={{ display: "flex", width: "auto" }}>
+    <View style={styles.container}>
+      <View style={styles.calendarContainer}>
         <CalendarList
-          style={{
-            borderWidth: 1,
-            borderColor: "gray",
-            backgroundColor: "transparent",
-            display: "flex",
-            width: "100%",
-          }}
-          theme={{
-            monthTextColor: "white",
-            backgroundColor: "white",
-            calendarBackground: "black",
-            textSectionTitleColor: "white",
-            selectedDayBackgroundColor: "white",
-            selectedDayTextColor: "black",
-            todayTextColor: "white",
-            dayTextColor: "white",
-            textMonthFontWeight: "bold",
-            textDisabledColor: "grey",
-          }}
-          onVisibleMonthsChange={(months) => setSelectedMonths(months[0].month)}
+          style={styles.calendar}
+          theme={calendarTheme}
+          onVisibleMonthsChange={(months) => {}}
           current={formattedDate}
           futureScrollRange={2}
           markedDates={{
-            [selected]: {
+            [selectedDate?.dateString || ""]: {
               selected: true,
             },
           }}
-          onDayPress={(day) => {
-            if (!isSunday(day.dateString)) {
-              setSelected(day.dateString);
-              getTimesData(day);
-            }
-          }}
-          showScrollIndicator={true}
+          onDayPress={handleDayPress}
+          showScrollIndicator
           pastScrollRange={0}
-          horizontal={true}
-          pagingEnabled={true}
+          horizontal
+          pagingEnabled
           minDate={formattedDate}
-          hideExtraDays={true}
+          hideExtraDays
         />
       </View>
-      <View style={{ display: "flex" }}>
-        {timesData.length > 0 && !isLoading && <Summary data={timesData} />}
-        {timesData.length === 0 && !isLoading && <NotSummary />}
-        {isLoading && (
-          <Text style={{ textAlign: "center" }}>
-            {" "}
-            <Loader />
-          </Text>
+
+      <View style={styles.timesAndDetails}>
+        {isLoading && <Loader />}
+        {!isLoading && !error && timesData.length > 0 && (
+          <Summary
+            data={timesData}
+            setSelectedItem={setSelectedItem}
+            selectedItem={selectedItem}
+          />
         )}
+        {timesData.length === 0 && <NotSummary />}
+
         {reservation && <Details data={reservation} />}
       </View>
-      <View style={{ marginTop: 20 }}>
+      <View style={styles.buttonContainer}>
         <FlatButton text="Nastavi" onPress={reportHandler} />
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+  },
+  calendarContainer: {
+    marginTop: 50,
+    width: "100%",
+  },
+  calendar: {
+    borderWidth: 1,
+    borderColor: "gray",
+    backgroundColor: "transparent",
+    display: "flex",
+    width: "100%",
+  },
+  timesAndDetails: {
+    display: "flex",
+  },
+  buttonContainer: {
+    marginTop: 5,
+  },
+});
 
 export default DateComponent;

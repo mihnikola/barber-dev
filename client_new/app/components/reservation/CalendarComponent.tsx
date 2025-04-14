@@ -11,50 +11,11 @@ import axios from "axios";
 import Loader from "@/components/Loader";
 import CardFutureReservation from "@/app/components/reservation/CardFutureReservation";
 import CardNoReservation from "@/app/components/reservation/CardNoReservation";
+import useReservations from "./hooks/useReservations";
 
-const CalendarComponent = ({ token }) => {
-  const [check, setCheck] = useState(true);
-  const [reservations, setReservations] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const checkReservationHandler = () => {
-    setCheck(true);
-  };
-
-  const checkPastReservationHandler = () => {
-    setCheck(false);
-  };
-  useEffect(() => {
-    getReservationsData();
-  }, [check]);
-
-  const getReservationsData = async () => {
-    setIsLoading(true);
-
-    try {
-      await axios
-        .get(`${process.env.EXPO_PUBLIC_API_URL}/reservations`, {
-          params: {
-            token,
-            check: check,
-          },
-          headers: { Authorization: `${token}` },
-        })
-        .then((res) => {
-          console.log("rrrrDtadata", res.data);
-          if (res.status === 200) {
-            setReservations(res.data);
-            setIsLoading(false);
-          }
-        })
-        .catch((err) => console.log(err));
-    } catch (e) {
-      console.log(e);
-      setIsLoading(false);
-    }
-    setIsLoading(false);
-  };
-
+const CalendarComponent = () => {
+  const { reservations, isLoading, checkReservationHandler, check } =
+    useReservations();
   return (
     <ScrollView style={styles.container}>
       <Image
@@ -70,7 +31,7 @@ const CalendarComponent = ({ token }) => {
         </Text>
         <Text
           style={[styles.capture, !check && styles.active]}
-          onPress={checkPastReservationHandler}
+          onPress={checkReservationHandler}
         >
           Prošli
         </Text>

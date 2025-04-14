@@ -70,8 +70,9 @@ const convertWithChooseService = (timeString, serviceDuration) => {
 
 // Middleware to protect routes (auth middleware)
 const authenticate = (req, res, next) => {
+
   const token = req.header("Authorization")
-    ? req.header("Authorization")
+    ? req.header("Authorization").split(" ")[1]
     : req.body.headers.Authorization
     ? req.body.headers.Authorization
     : req.get("authorization");
@@ -81,6 +82,7 @@ const authenticate = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
+    console.log("authenticate",err)
     res.status(400).send("Invalid token");
   }
 };

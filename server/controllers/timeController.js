@@ -8,6 +8,25 @@ const Reservation = require("../models/Reservation");
 const Time = require("../models/Time");
 const jwt = require("jsonwebtoken");
 
+function filterFutureTimeSlots(timeSlots, currentTime, dateValue) {
+  const now = new Date();
+
+  const dateS = new Date(dateValue);
+
+  if (dateS > now) {
+    return timeSlots;
+  }
+  return timeSlots.filter((timeSlot) => {
+    const [hours, minutes] = timeSlot.value.split(":").map(Number);
+    const slotTime = new Date(currentTime);
+    slotTime.setHours(hours);
+    slotTime.setMinutes(minutes);
+    slotTime.setSeconds(0);
+    slotTime.setMilliseconds(0);
+    return slotTime > currentTime;
+  });
+}
+
 exports.createTime = async (req, res) => {
   try {
     const { value } = req.body;
@@ -20,18 +39,18 @@ exports.createTime = async (req, res) => {
 };
 
 exports.getTimes = async (req, res) => {
-
+  const now = new Date();
 
   try {
-    const { date, service, token, employer  } = req.query;
+    const { date, service, token, employer } = req.query;
     let decoded = null;
-    if(token){
+    if (token) {
       decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     }
-    const emplId = decoded ? decoded.id : employer.id
+    const emplId = decoded ? decoded.id : employer.id;
 
     const reservation = await Reservation.find({
-      status: {$nin :[2]},
+      status: { $nin: [2] },
       user: emplId,
       date,
     }).populate("service", "duration"); // This will populate only the 'duration' field from the Service model
@@ -59,20 +78,27 @@ exports.getTimes = async (req, res) => {
       });
       const timeRanges = reservationValueTimesData.map((item, index) => {
         const timeValue = time[index].split(":").map(Number);
-        const resultTime =  `${timeValue[0] < 10 ? "0" : ""}${timeValue[0]}:${timeValue[1]}`;
+        const resultTime = `${timeValue[0] < 10 ? "0" : ""}${timeValue[0]}:${
+          timeValue[1]
+        }`;
         return {
           start: item,
           // end: time[index], //mora 09:50 a ne 9:50
-          end: resultTime
+          end: resultTime,
         };
       });
-      getTimeValues(timeRanges).then((result) => res.status(200).json(result));
+      getTimeValues(timeRanges).then((result) => {
+        const futureSlots = filterFutureTimeSlots(result, now);
+        res.status(200).json(futureSlots);
+      });
     } else {
       const times = await Time.find();
-      res.status(200).json(times);
+      const futureSlots = filterFutureTimeSlots(times, now, date);
+
+      res.status(200).json(futureSlots);
     }
   } catch (err) {
-    console.log("object",err)
+    console.log("object", err);
     res.status(500).json({ error: err.message });
   }
 };

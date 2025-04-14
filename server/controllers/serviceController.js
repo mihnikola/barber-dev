@@ -75,9 +75,10 @@ exports.putService = async (req, res) => {
 
 // Get all services
 exports.getServices = async (req, res) => {
+  console.log("DSAddasdas")
   try {
     const services = await Service.find();
-console.log("mjauuuuuuuuuuuu")
+    console.log("servicesservices",services)
     const servicesData = services.map((item) => {
       return {
         id: item._id,
@@ -90,6 +91,7 @@ console.log("mjauuuuuuuuuuuu")
 
     res.status(200).json(servicesData);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.log("first",err)
+    res.status(500).json({ message: err.message });
   }
 };

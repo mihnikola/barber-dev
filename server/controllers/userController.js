@@ -161,6 +161,7 @@ exports.loginAdminUser = async (req, res) => {
 
 // Login user
 exports.loginUser = async (req, res) => {
+
   try {
     const { email, password } = req.body;
 
@@ -182,6 +183,7 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: "Not verified" });
     }
 
+
     const userData = {
       id: user._id,
       email: user.email,
@@ -190,9 +192,13 @@ exports.loginUser = async (req, res) => {
     const token = jwt.sign(userData, process.env.JWT_SECRET_KEY, {
       expiresIn: "10000000m",
     });
+
+
+
     res.status(200).json({ token });
     // Send the token as a response
   } catch (err) {
+    console.log("loginUser err ",err)
     res.status(500).json({ error: err.message });
   }
 };
@@ -201,7 +207,6 @@ exports.loginUser = async (req, res) => {
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find({ role: { $exists: true, $ne: null } });
-    console.log("isssssss");
     const usersData = users.map((user) => {
       return {
         id: user._id,

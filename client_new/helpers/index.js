@@ -17,7 +17,18 @@ export function addMinutesToTime(inputTime, minutesToAdd) {
 
   return `${updatedHours}:${updatedMinutes}`;
 }
-
+export const calendarTheme = {
+  monthTextColor: "white",
+  backgroundColor: "white",
+  calendarBackground: "black",
+  textSectionTitleColor: "white",
+  selectedDayBackgroundColor: "white",
+  selectedDayTextColor: "black",
+  todayTextColor: "white",
+  dayTextColor: "white",
+  textMonthFontWeight: "bold",
+  textDisabledColor: "grey",
+};
 export function convertToMonthName(dateString) {
   // Convert the string to a Date object
   const date = new Date(dateString);
@@ -69,13 +80,9 @@ export const convertDate = (item: any) => {
 
 export const getStorage = async () => {
   try {
-    let valid;
      await AsyncStorage.getItem('token').then((resToken) => {
-      valid = resToken;
+      return resToken;
     });
-    if(valid){
-      return valid;
-    }
   } catch (e) {
     // error reading value
   }

@@ -23,10 +23,9 @@ exports.createReservation = async (req, res) => {
     const customerId = customer !== "" ? null : decoded.id;
     const employerData = employerId === "" ? decoded.id : employerId;
     const status = customer !== "" ? 1 : 0;
-    const timeStampValue = convertToTimeStamp(date, time);
-
+    const timeStampValue = convertToTimeStamp(date?.dateString, time);
     const newReservation = new Reservation({
-      date,
+      date: date?.dateString,
       time,
       service: service_id,
       employer: employerData,
@@ -57,6 +56,7 @@ exports.createReservation = async (req, res) => {
     } catch (error) {
       console.error("Error calling function:", error);
     }
+
     res.status(201).json(newReservation);
   } catch (err) {
     console.log("errorcina", err);
@@ -99,6 +99,7 @@ exports.getReservations = async (req, res) => {
         .populate("service") // Populate service data
         .populate("user"); // Populate employee data
     }
+    console.log("reser5va",reservations);
     res.status(200).json(reservations);
   } catch (err) {
     res.status(500).json({ error: err.message });
