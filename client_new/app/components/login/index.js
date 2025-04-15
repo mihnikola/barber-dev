@@ -58,7 +58,7 @@ const LoginScreen = ({ change }) => {
       <TouchableOpacity onPress={handleLogin} disabled={pending}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>
-            {pending ? "Prijavljivanje..." : "Prijava"}
+            {pending ? "Submitting..." : "Submit"}
           </Text>
         </View>
       </TouchableOpacity>
