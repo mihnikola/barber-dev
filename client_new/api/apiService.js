@@ -46,6 +46,18 @@ const get = async (url, config = {}) => {
   }
 };
 
+const getData = async (url, data, config = {}) => {
+  try {
+    const response = await instance.get(url, {
+      ...config,
+      params: data, // Pass data as query params
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const post = async (url, data, config = {}) => {
   try {
     const response = await instance.post(url, data, config);
@@ -82,4 +94,4 @@ const del = async (url, config = {}) => {
   }
 };
 
-export { get, post, put, patch, del as delete };
+export { get, post, getData, put, patch, del as delete };
