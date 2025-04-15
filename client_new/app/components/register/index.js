@@ -121,7 +121,7 @@ const Register = ({ change }) => {
         <TouchableOpacity onPress={handleRegister} disabled={loading}>
           <View style={styles.button}>
             <Text style={styles.buttonText}>
-              {loading ? "Registracija..." : LABEL_VALUES.REGISTER}
+              {loading ? "Submitting..." : LABEL_VALUES.REGISTER}
             </Text>
           </View>
         </TouchableOpacity>
@@ -131,9 +131,9 @@ const Register = ({ change }) => {
       <View style={styles.container}>
         <View style={styles.textContainer}>
           <Text style={styles.text}>
-            Imate nalog? Klikni{" "}
+            You have account? Click{" "}
             <TouchableOpacity onPress={change} style={{ marginTop: 7 }}>
-              <Text style={styles.linkText}>ovde.</Text>
+              <Text style={styles.linkText}>here.</Text>
             </TouchableOpacity>
           </Text>
         </View>
