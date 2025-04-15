@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { get } from "@/api/apiService";
+import { getStorage } from "@/helpers";
 
 const convertDateRequest = (dateObj) => {
   const date = new Date(dateObj.timestamp);
@@ -41,7 +42,10 @@ const useFetchTimes = (date, reservation) => {
       };
       const dateValue = convertDateRequest(selectedDate);
 
+
       try {
+
+        const tokenData = await getStorage();
         const response = await get("/times", {
           params: {
             date: dateValue,
@@ -61,8 +65,10 @@ const useFetchTimes = (date, reservation) => {
     [reservation]
   ); // Dependencies for useCallback
 
+
   useEffect(() => {
     if (date) {
+
       fetchTimes(date);
     }
   }, [date, fetchTimes]);
