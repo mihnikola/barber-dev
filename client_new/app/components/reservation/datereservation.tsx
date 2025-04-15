@@ -1,34 +1,41 @@
-// import React, { useEffect, useState } from "react";
-// import { getStorage } from "@/helpers";
-// import LoginScreen from "../login";
+import React, { useEffect, useState } from "react";
+import { getStorage } from "@/helpers";
+import LoginScreen from "../login";
 import DateComponent from "./DateComponent";
-// import Loader from "@/components/Loader";
-// import SignForm from "../SignForm/SignForm";
+import Loader from "@/components/Loader";
+import SignForm from "../SignForm/SignForm";
 
 const DateReservation: React.FC = () => {
-  // const [isLoggedIn, setIsLoggedIn] = useState(null);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   getStorage()
-  //     .then((res) => {
-  //       if (res) {
-  //         setIsLoggedIn(res);
-  //         setIsLoading(false);
-  //       } else {
-  //         setIsLoggedIn(null);
-  //         setIsLoading(false);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
+  useEffect(() => {
+    setIsLoading(true);
+    getTokenStorage();
+  }, []);
 
-  //       console.log("error", error);
-  //     });
-  // }, []);
-  // return <>{!isLoading && isLoggedIn && <DateComponent />}{!isLoading && !isLoggedIn && <SignForm />}{isLoading && <Loader/>}</>;
-  return <DateComponent />;
+  const getTokenStorage = async () => {
+    await getStorage("token")
+      .then((res) => {
+        if (res) {
+          console.log(":::::::::::",res)
+          setIsLoggedIn(res);
+          setIsLoading(false);
+        } else {
+          setIsLoading(false);
+        }
+      })
+      .catch((er) => {
+        console.log("errr", er);
+      });
+  };
+  return (
+    <>
+      {!isLoading && isLoggedIn && <DateComponent />}
+      {!isLoading && !isLoggedIn && <SignForm />}
+      {isLoading && <Loader />}
+    </>
+  );
 };
 
 export default DateReservation;
