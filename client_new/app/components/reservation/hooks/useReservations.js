@@ -1,5 +1,5 @@
 // src/hooks/useReservations.js
-import { getStorage } from "@/helpers";
+import {  getData } from "@/api/apiService";
 import { useState, useEffect, useCallback } from "react";
 
 const useReservations = () => {
@@ -15,22 +15,12 @@ const useReservations = () => {
   const getReservationsData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-
-    console.log("tokesadnhasidjiaskdhaskjdh askdhaskjdhaskjdhakjh n");
-
     try {
-      await getStorage().then(async (res) => {
-        if (res) {
-          const response = await get("/reservations", {
-            params: {
-              token,
-              check,
-            },
-          });
-          setReservations(response.data);
-          setIsLoading(false);
-        }
+      const response = await getData("/reservations", {
+        check,
       });
+      setReservations(response);
+      setIsLoading(false);
     } catch (err) {
       console.error("Error fetching reservations:", err);
       setError(
@@ -42,7 +32,7 @@ const useReservations = () => {
   }, [check]);
 
   useEffect(() => {
-    // getReservationsData();
+    getReservationsData();
   }, [getReservationsData]);
 
   return {
