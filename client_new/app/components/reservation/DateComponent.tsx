@@ -13,33 +13,61 @@ import useSelectedDate from "./hooks/useSelectedDate";
 import { calendarTheme } from "@/helpers";
 
 // Set up locale for Serbian language
-LocaleConfig.locales["srb"] = {
+// LocaleConfig.locales["srb"] = {
+//   monthNames: [
+//     "Januar",
+//     "Februar",
+//     "Mart",
+//     "April",
+//     "Maj",
+//     "Jun",
+//     "Jul",
+//     "Avgust",
+//     "Septembar",
+//     "Oktobar",
+//     "Novembar",
+//     "Decembar",
+//   ],
+//   dayNames: [
+//     "Nedelja",
+//     "Ponedeljak",
+//     "Utorak",
+//     "Sreda",
+//     "Četvrtak",
+//     "Petak",
+//     "Subota",
+//   ],
+//   dayNamesShort: ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"],
+// };
+// LocaleConfig.defaultLocale = "srb";
+
+LocaleConfig.locales["en"] = {
   monthNames: [
-    "Januar",
-    "Februar",
-    "Mart",
+    "January",
+    "February",
+    "March",
     "April",
-    "Maj",
-    "Jun",
-    "Jul",
-    "Avgust",
-    "Septembar",
-    "Oktobar",
-    "Novembar",
-    "Decembar",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ],
   dayNames: [
-    "Nedelja",
-    "Ponedeljak",
-    "Utorak",
-    "Sreda",
-    "Četvrtak",
-    "Petak",
-    "Subota",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
   ],
-  dayNamesShort: ["Ned", "Pon", "Uto", "Sre", "Čet", "Pet", "Sub"],
+  dayNamesShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
 };
-LocaleConfig.defaultLocale = "srb";
+LocaleConfig.defaultLocale = "en";
 
 const DateComponent = () => {
   
@@ -101,7 +129,7 @@ const DateComponent = () => {
         {reservation && <Details data={reservation} />}
       </View>
       <View style={styles.buttonContainer}>
-        <FlatButton text="Nastavi" onPress={reportHandler} />
+        <FlatButton text="Continue" onPress={reportHandler} />
       </View>
     </View>
   );
