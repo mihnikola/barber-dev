@@ -23,10 +23,9 @@ exports.createReservation = async (req, res) => {
     const customerId = customer !== "" ? null : decoded.id;
     const employerData = employerId === "" ? decoded.id : employerId;
     const status = customer !== "" ? 1 : 0;
-    const timeStampValue = convertToTimeStamp(date, time);
-
+    const timeStampValue = convertToTimeStamp(date?.dateString, time);
     const newReservation = new Reservation({
-      date,
+      date: date?.dateString,
       time,
       service: service_id,
       employer: employerData,
@@ -57,6 +56,7 @@ exports.createReservation = async (req, res) => {
     } catch (error) {
       console.error("Error calling function:", error);
     }
+
     res.status(201).json(newReservation);
   } catch (err) {
     console.log("errorcina", err);
@@ -66,7 +66,15 @@ exports.createReservation = async (req, res) => {
 
 // Get all reservations
 exports.getReservations = async (req, res) => {
-  const { date, token, check } = req.query;
+
+  const token = req.header("Authorization")
+  ? req.header("Authorization").split(" ")[1]
+  : req.body.headers.Authorization
+  ? req.body.headers.Authorization
+  : req.get("authorization");
+if (!token) return res.status(403).send("Access denied");
+
+  const { date, check } = req.query;
 
   const currentDate = new Date(); // This will be a valid JavaScript Date object
   try {
@@ -75,9 +83,7 @@ exports.getReservations = async (req, res) => {
     const emplId = date ? decoded.id : null;
     const customerId = date ? null : decoded.id;
     let reservations = [];
-    // Reservation.find({
-    //   status: { $nin: [2, 3] }
-    // })
+   
     if (!date) {
       reservations = await Reservation.find({
         user: customerId,

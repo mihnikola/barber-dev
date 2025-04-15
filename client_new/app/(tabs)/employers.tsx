@@ -1,52 +1,29 @@
-import {
-  ScrollView,
-  Image,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import { ScrollView, Image, StyleSheet, View } from "react-native";
+import React, { useCallback, useContext } from "react";
 import { Text } from "react-native";
-import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
-import placeholderImg from "../../assets/images/placeholderImg.png";
 import Loader from "@/components/Loader";
 import ReservationContext from "@/context/ReservationContext";
-
+import useFetchEmployers from "../components/employers/hooks/useFetchEmployers";
+import EmployerItem from "../components/employers/EmployerItem";
 const Employers = () => {
   const navigation = useNavigation();
-  const [emplData, setEmplData] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const { reservation, updateReservation } = useContext(ReservationContext)!; // Access context  const route = useRoute();
+  const { reservation, updateReservation } = useContext(ReservationContext)!;
+  const { emplData, isLoading, error } = useFetchEmployers(); // Use the custom hook
 
-  useEffect(() => {
-    fetchAllEmployees();
-  }, []);
 
-  const fetchAllEmployees = async () => {
-    setIsLoading(true);
-    const api = `${process.env.EXPO_PUBLIC_API_URL}/users`;
-    try {
-      await axios
-        .get(`${api}`)
-        .then((response) => {
-          setEmplData(response.data);
-          setIsLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setIsLoading(false);
-        });
-    } catch (error) {
-      console.error(error);
-    }
-    setIsLoading(false);
-  };
-  const redirectHandler = (employer) => {
-    updateReservation({ ...reservation, employer });
-    navigation.navigate("components/services/index");
-  };
+
+  const redirectHandler = useCallback(
+    (employer) => {
+      updateReservation({ ...reservation, employer });
+      navigation.navigate("components/services/index");
+    },
+    [navigation, reservation, updateReservation]
+  );
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <ScrollView style={styles.container}>
@@ -56,39 +33,12 @@ const Employers = () => {
       />
       <Text style={styles.capture}>Odaberite frizera</Text>
       {!isLoading && (
-        <View
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            alignContent: "center",
-          }}
-        >
-          {emplData.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => redirectHandler(item)}
-              style={styles.wrapper}
-            >
-              <View style={styles.content}>
-                {item.image && (
-                  <Image source={{ uri: item.image }} style={styles.image} />
-                )}
-                {!item.image && (
-                  <Image source={placeholderImg} style={styles.image} />
-                )}
-                <View style={styles.data}>
-                  <Text style={styles.name}>{item.name}</Text>
-                </View>
-                <View style={{ display: "flex", justifyContent: "center" }}>
-                  <IconSymbol size={28} name="arrow.right" color="#000" />
-                </View>
-              </View>
-            </TouchableOpacity>
+        <View style={styles.contentContainer}>
+          {emplData?.map((item) => (
+            <EmployerItem key={item.id} data={item} redirectHandler={redirectHandler} />
           ))}
         </View>
       )}
-      {isLoading && <Loader />}
     </ScrollView>
   );
 };
@@ -96,45 +46,17 @@ const Employers = () => {
 export default Employers;
 
 const styles = StyleSheet.create({
-  wrapper: {
-    display: "flex",
-    width: "100%",
-    borderRadius: 20,
-    padding: 15,
-    overflowY: "scroll",
-  },
   coverImage: {
     width: "100%",
     height: 200,
     opacity: 0.2,
   },
-  data: {
+
+  contentContainer: {
     display: "flex",
     justifyContent: "center",
-    width: "55%",
-  },
-  image: {
-    width: 70,
-    height: 70,
-    borderRadius: 70 / 2,
-    overflow: "hidden",
-  },
-  name: {
-    fontSize: 18,
-  },
-  position: {
-    fontSize: 14,
-    fontStyle: "italic",
-    textAlign: "left",
-  },
-  content: {
-    backgroundColor: "white",
-    display: "flex",
-    flexDirection: "row",
-    width: "100%",
-    borderRadius: 20,
-    padding: 10,
-    gap: 20,
+    alignItems: "center",
+    alignContent: "center",
   },
   capture: {
     fontSize: 32,

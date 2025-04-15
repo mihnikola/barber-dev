@@ -24,6 +24,7 @@ import OnboardingComponent from "@/components/OnboardingComponent";
 import Storage from "expo-storage";
 import { getStorage, removeStorage } from "@/helpers";
 import axios from "axios";
+import { MAIN_DATA } from "@/constants";
 
 // Handle background notifications using Expo's background handler
 Notifications.setNotificationHandler({
@@ -154,26 +155,26 @@ export default function HomeScreen() {
       />
 
       <View style={styles.contentBtn}>
-        <FlatButton text="rezerviši" onPress={nextPage} />
+        <FlatButton text="Book" onPress={nextPage} />
       </View>
       <AboutUsInfo />
       <View style={styles.content}>
         <ListAboutUs />
       </View>
       <View style={styles.reviewContent}>
-        <Text style={styles.reviewCapture}> Recenzije </Text>
+        <Text style={styles.reviewCapture}> {MAIN_DATA.review} </Text>
         <OnboardingComponent />
       </View>
 
       <View style={styles.content}>
-        <Text style={styles.reviewCapture}>Poseti nas</Text>
-        <Text style={styles.text}>Ponedeljak - Petak (09:00 - 18:00)</Text>
-        <Text style={styles.text}>Subotom (10:00 - 17:00)</Text>
-        <Text style={styles.text}>Nedeljom Ne Radimo</Text>
+        <Text style={styles.reviewCapture}>{MAIN_DATA.contact}</Text>
+        <Text style={styles.text}>{MAIN_DATA.workDays}</Text>
+        <Text style={styles.text}>{MAIN_DATA.workSaturday}</Text>
+        <Text style={styles.text}>{MAIN_DATA.sunday}</Text>
       </View>
 
       <View style={styles.mapContainer}>
-        <Text style={styles.mapCapture}> Lokacija </Text>
+        <Text style={styles.mapCapture}> Location </Text>
         <TouchableHighlight onPress={openYosemiteZoomedOut}>
           <Image
             source={require("../../assets/images/mapimage.jpg")}
@@ -291,6 +292,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     backgroundColor: "#000000",
+    
   },
   container: {
     flex: 1,

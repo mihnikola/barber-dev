@@ -1,57 +1,18 @@
 import { View, Text, StyleSheet, Image } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import ReservationContext from "@/context/ReservationContext";
 import Button from "@/shared-components/Button";
 import { useNavigation } from "@react-navigation/native";
-import CustomCheckbox from "@/shared-components/CustomCheckbox";
-import * as Notifications from 'expo-notifications';
 import { addMinutesToTime, convertDate } from "@/helpers";
 
 const makereservation = () => {
-  const { reservation } = useContext(ReservationContext);
-  const [expoPushToken, setExpoPushToken] = useState(null);
+  const { reservation } = useContext(ReservationContext)!;
   const navigation = useNavigation();
   const { employer, service, timeData, dateReservation } = reservation;
-  //   const [loading,setLoading] = useState(false);
-
-
-  // const getFcmToken = async () => {
-  //   const token = await messaging().getToken();
-  //   console.log("FCM Token:", token);
-  //   // Send this token to your backend server
-  // };
-  // useEffect(() => {
-  //   getFcmToken();
-
-  //   const getPushNotificationToken = async () => {
-  //     try {
-  //       const { status } = await Notifications.requestPermissionsAsync();
-  //       if (status === 'granted') {
-  //         const token = await Notifications.getExpoPushTokenAsync();
-  //         setExpoPushToken(token.data);
-  //         console.log('Expo Push Token:', token.data);
-  //       } else {
-  //         console.log('Notification permission not granted');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error getting Expo push token:', error);
-  //     }
-  //   };
-  //   getPushNotificationToken();
-
-  // }, []);
-
-
-
+  console.log("reservationreservation",reservation);
   
   const submitReservationHandler =  async () => {
-    // if (!expoPushToken) {
-    //   console.log("No push token available");
-    //   return;
-    // }
     navigation.navigate("(tabs)", { screen: "explore" });
-    
-    
   };
 
   return (
@@ -66,8 +27,8 @@ const makereservation = () => {
       />
       <View style={styles.coverContent}>
         <Text style={styles.timeData}>
-          {timeData.value} -{" "}
-          {addMinutesToTime(timeData.value, service.duration)}
+          {timeData?.value} -{" "}
+          {addMinutesToTime(timeData?.value, service?.duration)}
         </Text>
         <Text style={styles.dateData}>
           {convertDate(dateReservation)}
@@ -160,20 +121,3 @@ const styles = StyleSheet.create({
     marginTop: -1, // Optional: You can adjust this to fine-tune the position
   },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

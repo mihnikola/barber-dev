@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 import CalendarComponent from "../components/reservation/CalendarComponent";
 import SignForm from "../components/SignForm/SignForm";
+import { StyleSheet, Text, View } from "react-native";
+import InfoComponent from "@/shared-components/InfoComponent";
 
 export default function TabTwoScreen() {
   const [isLoading, setIsLoading] = useState(false);
@@ -39,8 +41,13 @@ export default function TabTwoScreen() {
 
   return (
     <>
-      {!isLoading && token && <CalendarComponent token={token} />}
-      {!isLoading && !token && <SignForm />}
+      {!isLoading && token && <CalendarComponent />}
+      {!isLoading && !token && (
+        <>
+          <SignForm />
+          <InfoComponent title="Sign in to see your calendar appointments" />
+        </>
+      )}
       {isLoading && !token && <Loader />}
     </>
   );

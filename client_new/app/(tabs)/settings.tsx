@@ -5,6 +5,7 @@ import Loader from "@/components/Loader";
 import { useIsFocused } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignForm from "../components/SignForm/SignForm";
+import InfoComponent from "@/shared-components/InfoComponent";
 
 export default function Settings() {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,22 +13,22 @@ export default function Settings() {
   const [token, setToken] = useState<string | null>(null);
 
   const isFocused = useIsFocused(); // useIsFocused hook
- // Function to check for token in AsyncStorage
- const checkToken = async () => {
-  setIsLoading(true);
-  try {
-    const storedToken = await AsyncStorage.getItem("token");
-    if (storedToken) {
-      setToken(storedToken);
-      console.log("Token exists:", storedToken);
-    } else {
-      setToken(null);
-      console.log("No token found");
+  // Function to check for token in AsyncStorage
+  const checkToken = async () => {
+    setIsLoading(true);
+    try {
+      const storedToken = await AsyncStorage.getItem("token");
+      if (storedToken) {
+        setToken(storedToken);
+        console.log("Token exists:", storedToken);
+      } else {
+        setToken(null);
+        console.log("No token found");
+      }
+    } catch (error) {
+      console.error("Error reading token:", error);
     }
-  } catch (error) {
-    console.error("Error reading token:", error);
-  }
-};
+  };
   // useEffect that runs when the screen is focused
   useEffect(() => {
     if (isFocused) {
@@ -37,5 +38,16 @@ export default function Settings() {
     }
   }, [isFocused]); // Dependency on isFocused to trigger the effect
 
-  return <>{!isLoading && token && <SettingsComponent />}{!isLoading && !token && <SignForm />}{isLoading && <Loader/>}</>;
+  return (
+    <>
+      {!isLoading && token && <SettingsComponent />}
+      {!isLoading && !token && (
+        <>
+          <SignForm />
+          <InfoComponent title="Sign in to see your settings" />
+        </>
+      )}
+      {isLoading && <Loader />}
+    </>
+  );
 }

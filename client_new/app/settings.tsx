@@ -2,13 +2,10 @@ import { View, Text, Image, Pressable, StyleSheet, Alert } from "react-native";
 import React, { useState } from "react";
 import { IconSymbol } from "@/components/ui/IconSymbol";
 import { useNavigation } from "expo-router";
-import axios from "axios";
-import { getStorage, removeStorage } from "@/helpers";
-import Storage from "expo-storage";
+import { removeStorage } from "@/helpers";
 
 const SettingsComponent = () => {
   const navigation = useNavigation();
-  const [logout, setLogout] = useState(null);
 
   const onPressHandler = (data) => {
     if (data === "1") {
@@ -17,9 +14,6 @@ const SettingsComponent = () => {
     if (data === "2") {
       navigation.navigate("components/infoapp/aboutapplication");
     }
-    // if (data === "3") {
-    //   navigation.navigate("components/settings/aboutapplication");
-    // }
     if (data === "6") {
       alertMessageHandler();
       // navigation.navigate("components/settings/aboutapplication");
@@ -41,36 +35,7 @@ const SettingsComponent = () => {
       },
     ]);
   };
-
-  // getStorage()
-  // .then((res) => {
-  //   if (res) {
-  //     setLogout(res);
-  //   } else {
-  //     setLogout(null);
-  //   }
-  // })
-  // .catch((error) => {
-
-  //   console.log("error", error);
-  // });
-  // try {
-  //   await axios
-  //     .post(`${api}/users/logout", {
-  //       params:{
-  //         token: logout
-  //       },
-  //       headers: {
-  //         Authorization: `${logout}`,
-  //       },
-  //     })
-  //     .then((res) => {
-  //       navigation.navigate("(tabs)");
-  //     })
-  //     .catch((er) => console.log(er));
-  // } catch (err) {
-  //   console.log(err);
-  // }
+ 
   const logoutHandler = async () => {
     removeStorage().then((s) => {
       navigation.navigate("(tabs)", { screen: "index" });

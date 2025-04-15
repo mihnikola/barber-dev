@@ -1,93 +1,16 @@
-import { View, Text, StyleSheet, Image, ScrollView } from "react-native";
-import React, { useContext, useState } from "react";
+import { View, Text, StyleSheet, Image, Button, TouchableOpacity } from "react-native";
+import React, { useContext } from "react";
 import ReservationContext from "@/context/ReservationContext";
-import Button from "@/shared-components/Button";
+import ButtonComponent from "@/shared-components/Button";
 import Details from "@/shared-components/Details";
 import Note from "@/shared-components/Note";
-import { useNavigation } from "@react-navigation/native";
-import SuccessModal from "@/shared-components/SuccessScreen";
-import Storage from "expo-storage";
-import axios from "axios";
-import { addMinutesToTime, convertDate, getStorage } from "@/helpers";
+import { addMinutesToTime, convertDate } from "@/helpers";
+import useSubmitReservation from "./hooks/useSubmitReservation";
 
 const Reservation = () => {
-  const { reservation } = useContext(ReservationContext);
-  const navigation = useNavigation();
+  const { reservation } = useContext(ReservationContext)!;
   const { employer, service, timeData, dateReservation } = reservation;
-  //   const [loading,setLoading] = useState(false);
-  const [dialogMessage, setDialogMessage] = useState(false);
-
-  const submitReservationHandler = async () => {
-    // await Storage.getItem({ key: "token" })
-    //   .then((res) => {
-    //     if(res){submitReserve(res)}
-    //   })
-    //   .catch((r) => console.log("object", r));
-    // submitNotification(tokenData);
-
-    getStorage()
-      .then((res) => {
-        if (res) {
-          submitReserve(res);
-        }
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-  };
-
-  const submitReserve = async (tokenData: any) => {
-    console.log("object reserve ", tokenData);
-    try {
-      await axios
-        .post(`${process.env.EXPO_PUBLIC_API_URL}/reservations`, {
-          params: {
-            employerId: employer.id,
-            service_id: service.id,
-            time: timeData.value,
-            date: dateReservation,
-            customer: "",
-            token: tokenData,
-          },
-          headers: { Authorization: `${tokenData}` },
-        })
-        .then((res) => {
-          if (res.request?.status === 201) {
-            // console.log("res", res.data);
-            // setTimesData(res.data);
-            // navigation.navigate("makereservation");
-            // submitNotification(tokenData);
-            navigation.navigate("components/reservation/makereservation");
-          }
-        })
-        .catch((err) => console.log("errorrrr", err));
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
-  const submitNotification = async (dataToken: any) => {
-    try {
-      await axios
-        .post(`${process.env.EXPO_PUBLIC_API_URL}/notifications`, {
-          params: {
-            token: dataToken,
-          },
-          headers: { Authorization: `${dataToken}` },
-        })
-        .then((res) => {
-          if (res.request?.status === 201) {
-            console.log("res", res.data);
-            // setTimesData(res.data);
-            // navigation.navigate("makereservation");
-          }
-        })
-        .catch((err) => console.log("xxxx", err));
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
-
+  const { submitReservationHandler, isLoading, error } = useSubmitReservation();
   return (
     <View style={styles.container}>
       <Image
@@ -97,19 +20,31 @@ const Reservation = () => {
       <View style={styles.coverContent}>
         <Text style={styles.timeData}>
           {timeData?.value} -{" "}
-          {addMinutesToTime(timeData?.value, service.duration)}
+          {addMinutesToTime(timeData?.value, service?.duration)}
         </Text>
-        <Text style={styles.dateData}>{convertDate(dateReservation)}</Text>
+        <Text style={styles.dateData}>
+          {convertDate(dateReservation?.dateString)}
+        </Text>
         <Text style={styles.dateData}>Frizerski Studio - Gentleman</Text>
       </View>
       <View style={{ display: "flex", padding: 10 }}>
         <View>
-          {/* <Image source={employer.image} style={styles.image} /> */}
           {reservation && <Details data={reservation} />}
           <Note />
 
           <View style={styles.reservation}>
-            <Button text="Rezerviši" onPress={submitReservationHandler} />
+            {isLoading ? (
+             <TouchableOpacity style={styles.button}> 
+             <Text style={styles.buttonText}>
+                 Booking...
+             </Text>
+          </TouchableOpacity >
+            ) : (
+              <ButtonComponent
+                text="Book"
+                onPress={submitReservationHandler}
+              />
+            )}
           </View>
         </View>
       </View>
@@ -120,6 +55,21 @@ const Reservation = () => {
 export default Reservation;
 
 const styles = StyleSheet.create({
+  button: {
+    display: "flex",
+    justifyContent: "center",
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    backgroundColor: "#ffffff",
+    borderRadius: 20,
+  },
+  buttonText: {
+    color: "black",
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    fontSize: 16,
+    textAlign: "center",
+  },
   reservation: {
     display: "flex",
     flexDirection: "column",
