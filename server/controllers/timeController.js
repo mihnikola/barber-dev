@@ -40,9 +40,17 @@ exports.createTime = async (req, res) => {
 
 exports.getTimes = async (req, res) => {
   const now = new Date();
+  const token = req.header("Authorization")
+    ? req.header("Authorization").split(" ")[1]
+    : req.body.headers.Authorization
+    ? req.body.headers.Authorization
+    : req.get("authorization");
+  if (!token) return res.status(403).send("Access denied");
+
+  console.log("token",token)
 
   try {
-    const { date, service, token, employer } = req.query;
+    const { date, service, employer } = req.query;
     let decoded = null;
     if (token) {
       decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
