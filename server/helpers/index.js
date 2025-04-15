@@ -70,7 +70,6 @@ const convertWithChooseService = (timeString, serviceDuration) => {
 
 // Middleware to protect routes (auth middleware)
 const authenticate = (req, res, next) => {
-
   const token = req.header("Authorization")
     ? req.header("Authorization").split(" ")[1]
     : req.body.headers.Authorization
