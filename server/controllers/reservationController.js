@@ -66,7 +66,15 @@ exports.createReservation = async (req, res) => {
 
 // Get all reservations
 exports.getReservations = async (req, res) => {
-  const { date, token, check } = req.query;
+
+  const token = req.header("Authorization")
+  ? req.header("Authorization").split(" ")[1]
+  : req.body.headers.Authorization
+  ? req.body.headers.Authorization
+  : req.get("authorization");
+if (!token) return res.status(403).send("Access denied");
+
+  const { date, check } = req.query;
 
   const currentDate = new Date(); // This will be a valid JavaScript Date object
   try {
@@ -75,9 +83,7 @@ exports.getReservations = async (req, res) => {
     const emplId = date ? decoded.id : null;
     const customerId = date ? null : decoded.id;
     let reservations = [];
-    // Reservation.find({
-    //   status: { $nin: [2, 3] }
-    // })
+   
     if (!date) {
       reservations = await Reservation.find({
         user: customerId,
@@ -99,7 +105,6 @@ exports.getReservations = async (req, res) => {
         .populate("service") // Populate service data
         .populate("user"); // Populate employee data
     }
-    console.log("reser5va",reservations);
     res.status(200).json(reservations);
   } catch (err) {
     res.status(500).json({ error: err.message });
