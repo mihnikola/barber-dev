@@ -3,19 +3,16 @@ import {
   Text,
   ScrollView,
   Image,
-  StyleSheet,
-  AppState,
+  StyleSheet
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 import Loader from "@/components/Loader";
 import CardFutureReservation from "@/app/components/reservation/CardFutureReservation";
 import CardNoReservation from "@/app/components/reservation/CardNoReservation";
 import useReservations from "./hooks/useReservations";
 
 const CalendarComponent = () => {
-  const { reservations, isLoading, checkReservationHandler, check } =
-    useReservations();
+  const { reservations, isLoading, checkReservationHandler, check } = useReservations();
   return (
     <ScrollView style={styles.container}>
       <Image
@@ -27,13 +24,13 @@ const CalendarComponent = () => {
           style={[styles.capture, check && styles.active]}
           onPress={checkReservationHandler}
         >
-          Budući
+          Future
         </Text>
         <Text
           style={[styles.capture, !check && styles.active]}
           onPress={checkReservationHandler}
         >
-          Prošli
+          Past
         </Text>
       </View>
       <View style={styles.greyLine} />
