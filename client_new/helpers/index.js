@@ -53,44 +53,54 @@ export function convertToDay(dateString) {
 }
 
 export const convertDate = (item: any) => {
-    const date = new Date(item);
-    const weekdays = [
-      "Nedelja",
-      "Ponedeljak",
-      "Utorak",
-      "Sreda",
-      "Četvrtak",
-      "Petak",
-      "Subota",
-    ];
+  const date = new Date(item);
+  // const weekdays = [
+  //   "Nedelja",
+  //   "Ponedeljak",
+  //   "Utorak",
+  //   "Sreda",
+  //   "Četvrtak",
+  //   "Petak",
+  //   "Subota",
+  // ];
 
-    // Get the day of the week in Croatian
-    const dayOfWeek = weekdays[date.getDay()];
+  const weekdays = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  
 
-    // Format the date to day-month-year
-    const day = String(date.getDate()).padStart(2, "0");
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const year = date.getFullYear();
+  // Get the day of the week in Croatian
+  const dayOfWeek = weekdays[date.getDay()];
 
-    // Combine everything into the desired format
-    return `${dayOfWeek} ${day}-${month}-${year}`;
-  };
+  // Format the date to day-month-year
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
 
-
+  // Combine everything into the desired format
+  return `${dayOfWeek} ${day}-${month}-${year}`;
+};
 
 export const getStorage = async () => {
+
   try {
-     await AsyncStorage.getItem('token').then((resToken) => {
+   const token = await AsyncStorage.getItem("token").then((resToken) => {
       return resToken;
     });
+    return token;
   } catch (e) {
     // error reading value
   }
 };
 export const saveStorage = async (value) => {
-
   try {
-    await AsyncStorage.setItem('token',value);
+    await AsyncStorage.setItem("token", value);
   } catch (e) {
     // saving error
   }
@@ -98,7 +108,7 @@ export const saveStorage = async (value) => {
 
 export const removeStorage = async () => {
   try {
-    await AsyncStorage.removeItem('token').then((resToken) => {
+    await AsyncStorage.removeItem("token").then((resToken) => {
       return resToken;
     });
   } catch (e) {
