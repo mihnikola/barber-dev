@@ -11,17 +11,16 @@ export const brImage = require("@/assets/images/njega-brade-615.jpg");
 export const faadeImg = require("@/assets/images/faaade.jpg");
 export const bradicaImage = require("@/assets/images/bradicaImage.jpg");
 
-
 export const ABOUT_DATA = {
-  title: "Ko smo mi?",
-  text: "Frizerski salon Gentleman je unikatan i jedinstven barbershop gde se na jednom mestu susreću old school i moderni barbering. Naš fokus je baziran na profesionalnoj usluzi, ljubaznosti, modernim muškim frizerima i pravom muškom hedonizmu. Dođite i uverite se da smo najbolji.",
-  textTwo: "Hvala vam na ukazanom poverenju i što brinete o sebi.",
-  textThree: "Vaš Frizerski Studio Gentleman",
+  title: "Who are we?",
+  text: "Gentleman Hair Salon is a unique and one-of-a-kind barbershop where old-school and modern barbering meet in one place. Our focus is on professional service, friendliness, modern men's hairstyling, and true male hedonism. Come and see for yourself that we are the best.",
+  textTwo: "Thank you for your trust and for taking care of yourself.",
+  textThree: "Yours truly, Gentleman Hair Studio",
 };
 
 export const LABEL_VALUES = {
-  REGISTER: "Registracija"
-}
+  REGISTER: "Submit",
+};
 export const CONTACT_DATA = [
   {
     id: 1,
@@ -38,84 +37,88 @@ export const CONTACT_DATA = [
 export const REVIEW_DATA = [
   {
     id: "1",
-    title: "Ivan P",
-    description: "Stvarno cenim kako ste se posvetili detaljima, frizura mi baš odgovara",
+    title: "Nick",
+    description:
+      "I really appreciate the attention to detail—this haircut suits me perfectly.",
     image: testimonialImg,
   },
   {
     id: "2",
-    title: "Milan R",
-    description: "Sve je bilo profesionalno. Sve preporuke za frizerski salon Gentleman.",
+    title: "Chris",
+    description:
+      "Everything was professional. I highly recommend Gentleman Hair Salon.",
     image: testimonialImg,
   },
   {
     id: "3",
-    title: "Marko Z",
-    description: "Frizura je stvarno dobro odrađena, osećam se kao da sam dobio baš ono što mi treba.",
+    title: "John",
+    description:
+      "The haircut was really well done, I feel like I got exactly what I needed.",
     image: testimonialImg,
   },
   {
     id: "4",
-    title: "Jovan P",
-    description: "Oduvek sam u potrazi za dobrom frizurom, i drago mi je da sam konačno našao mesto gde se osećam kao kod profesionalaca.",
+    title: "Michael",
+    description:
+      "I’ve always been searching for a good haircut, and I’m glad I finally found a place where I feel like I’m in the hands of true professionals.",
     image: testimonialImg,
   },
 ];
 
 
 export const MAIN_DATA = {
-  review: "Recenzije",
-  contact: "Poseti nas",
-  workDays: "Ponedeljak - Petak (09:00 - 18:00)",
-  workSaturday: "Subotom (10:00 - 17:00)",
-  sunday: "Nedeljom ne radimo",
-  location: "Lokacija"
-}
+  review: "Reviews",
+  contact: "Visit us",
+  workDays: "Monday - Friday (09:00 AM - 06:00 PM)",
+  workSaturday: "Saturday (10:00 AM - 05:00 PM)",
+  sunday: "Closed on Sundays",
+  location: "Location",
+};
 
 export const SERVICES_DATA = [
   {
-    id:1,
+    id: 1,
     title: "Klasično Šišanje",
     duration: "25",
     image: ksImage,
-    price: 700
+    price: 700,
   },
   {
-    id:2,
+    id: 2,
     title: "Fade Šišanje",
     duration: "40",
     image: fadeImage,
-    price: 1200
+    price: 1200,
   },
   {
-    id:3,
+    id: 3,
     title: "Klasično Šišanje & Brada",
     duration: "40",
     image: brImage,
-    price: 1100
+    price: 1100,
   },
   {
-    id:4,
+    id: 4,
     title: "Fade Šišanje & Brada",
     duration: "50",
     image: faadeImg,
-    price: 1300
+    price: 1300,
   },
   {
-    id:5,
+    id: 5,
     title: "Uređivanje Brade",
     duration: "20",
     image: bradicaImage,
-    price: 500
+    price: 500,
   },
   {
-    id:6,
+    id: 6,
     title: "Uređivanje Brade",
     duration: "20",
     image: bradicaImage,
-    price: 500
-  }
-]
+    price: 500,
+  },
+];
 
 export const EMPLOYEES_DATA = [
   {
@@ -154,18 +157,17 @@ export const EMPLOYEES_DATA = [
     position: "Top Frizer",
     image: man3,
   },
-]
+];
 
-
-  export const TIME_DATA = [
-    { label: "9", value: "09:00" },
-    { label: "10", value: "10:00" },
-    { label: "11", value: "11:00" },
-    { label: "12", value: "12:00" },
-    { label: "13", value: "13:00" },
-    { label: "14", value: "14:00" },
-    { label: "15", value: "15:00" },
-    { label: "16", value: "16:00" },
-    { label: "17", value: "17:00" },
-    { label: "18", value: "18:00" },
-  ];
+export const TIME_DATA = [
+  { label: "9", value: "09:00" },
+  { label: "10", value: "10:00" },
+  { label: "11", value: "11:00" },
+  { label: "12", value: "12:00" },
+  { label: "13", value: "13:00" },
+  { label: "14", value: "14:00" },
+  { label: "15", value: "15:00" },
+  { label: "16", value: "16:00" },
+  { label: "17", value: "17:00" },
+  { label: "18", value: "18:00" },
+];
